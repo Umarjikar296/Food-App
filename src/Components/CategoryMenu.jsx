@@ -1,0 +1,41 @@
+import React, { useEffect, useState } from 'react'
+import FoodData from '../Data/FoodData';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCategory } from '../Redux/Slices/CategorySlice';
+
+const CategoryMenu = () => {
+
+    const [categories, setCategories] = useState([]);
+
+    const listUniqueCategories = () => {
+        const uniqueCategories = [
+            ...new Set(FoodData.map((food) => food.category))];
+        setCategories(uniqueCategories);
+        console.log(uniqueCategories);
+
+    }
+
+    useEffect(() => {
+        listUniqueCategories();
+
+    }, [])
+
+    const dispatch = useDispatch();
+    const selectedCategory = useSelector((state) => state.category.category);
+
+    return (
+        <div className='mx-6'>
+            <h3 className='text-xl font-semibold'>Find the best food.</h3>
+            <div className='my-5 gap-3 flex overflow-x-scroll scroll-smooth lg:overflow-x-hidden'>
+
+                <button onClick={() => dispatch(setCategory("All"))} className={`cursor-pointer px-3 py-2 bg-gray-300 font-bold rounded-lg hover:bg-green-500 hover:text-white ${selectedCategory === "All" && "bg-green-500 text-white"}`}>All</button>
+
+                {categories.map((category, index) => {
+                    return (<button key={index} onClick={() => dispatch(setCategory(category))} className={`cursor-pointer px-3 py-2 bg-gray-300 font-bold rounded-lg hover:bg-green-500 hover:text-white ${selectedCategory === category && "bg-green-500 text-white"}`}>{category}</button>)
+                })}
+            </div>
+        </div>
+    )
+}
+
+export default CategoryMenu
